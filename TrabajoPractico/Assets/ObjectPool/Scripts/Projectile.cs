@@ -19,20 +19,6 @@ public class Projectile : MonoBehaviour {
 
     public ParticleSystem explosion;
 
-    private void Start()
-    {
-        if (catapult)
-        {
-            lockOn = true;
-        }
-
-        if (type == TurretAI.TurretType.Single)
-        {
-            Vector3 dir = target.position - transform.position;
-            transform.rotation = Quaternion.LookRotation(dir);
-        }
-    }
-
     private void Update()
     {
         if (target == null)
@@ -116,6 +102,21 @@ public class Projectile : MonoBehaviour {
     public void Explosion()
     {
         Instantiate(explosion, transform.position, transform.rotation);
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    public void OnActive()
+    {
+        if (catapult)
+        {
+            lockOn = true;
+        }
+
+        if (type == TurretAI.TurretType.Single)
+        {
+            Vector3 dir = target.position - transform.position;
+            transform.rotation = Quaternion.LookRotation(dir);
+        }
     }
 }

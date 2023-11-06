@@ -30,7 +30,7 @@ public class TurretAI : MonoBehaviour {
     public Transform muzzleMain;
     public Transform muzzleSub;
     public GameObject muzzleEff;
-    public GameObject bullet;
+    private GameObject bullet;
     private bool shootLeft = true;
 
     private Transform lockOnPos;
@@ -178,29 +178,47 @@ public class TurretAI : MonoBehaviour {
         if (turretType == TurretType.Catapult)
         {
             lockOnPos = go.transform;
-            //Aplicar POOL OBJECT
             Instantiate(muzzleEff, muzzleMain.transform.position, muzzleMain.rotation);
-            GameObject missleGo = Instantiate(bullet, muzzleMain.transform.position, muzzleMain.rotation);
-            Projectile projectile = missleGo.GetComponent<Projectile>();
-            projectile.target = lockOnPos;
+            GameObject bullet = ProjectileObjectPool.Instance.GetCatapultBullet();
+            if (bullet != null)
+            {
+                bullet.transform.position = muzzleMain.transform.position;
+                bullet.transform.rotation = muzzleMain.rotation;
+                Projectile projectile = bullet.GetComponent<Projectile>();
+                bullet.SetActive(true);
+                projectile.OnActive();
+                projectile.target = lockOnPos;
+            }
         }
         else if(turretType == TurretType.Dual)
         {
             if (shootLeft)
             {
-                //Aplicar POOL OBJECT
                 Instantiate(muzzleEff, muzzleMain.transform.position, muzzleMain.rotation);
-                GameObject missleGo = Instantiate(bullet, muzzleMain.transform.position, muzzleMain.rotation);
-                Projectile projectile = missleGo.GetComponent<Projectile>();
-                projectile.target = transform.GetComponent<TurretAI>().currentTarget.transform;
+                GameObject bullet = ProjectileObjectPool.Instance.GetMisilBullet();
+                if (bullet != null)
+                {
+                    bullet.transform.position = muzzleMain.transform.position;
+                    bullet.transform.rotation = muzzleMain.rotation;
+                    Projectile projectile = bullet.GetComponent<Projectile>();
+                    bullet.SetActive(true);
+                    projectile.OnActive();
+                    projectile.target = currentTarget.transform;
+                }
             }
             else
             {
-                //Aplicar POOL OBJECT
                 Instantiate(muzzleEff, muzzleSub.transform.position, muzzleSub.rotation);
-                GameObject missleGo = Instantiate(bullet, muzzleSub.transform.position, muzzleSub.rotation);
-                Projectile projectile = missleGo.GetComponent<Projectile>();
-                projectile.target = transform.GetComponent<TurretAI>().currentTarget.transform;
+                GameObject bullet = ProjectileObjectPool.Instance.GetMisilBullet();
+                if (bullet != null)
+                {
+                    bullet.transform.position = muzzleSub.transform.position;
+                    bullet.transform.rotation = muzzleSub.rotation;
+                    Projectile projectile = bullet.GetComponent<Projectile>();
+                    bullet.SetActive(true);
+                    projectile.OnActive();
+                    projectile.target = currentTarget.transform;
+                }
             }
 
             shootLeft = !shootLeft;
@@ -209,9 +227,17 @@ public class TurretAI : MonoBehaviour {
         {
             //Aplicar POOL OBJECT
             Instantiate(muzzleEff, muzzleMain.transform.position, muzzleMain.rotation);
-            GameObject missleGo = Instantiate(bullet, muzzleMain.transform.position, muzzleMain.rotation);
-            Projectile projectile = missleGo.GetComponent<Projectile>();
-            projectile.target = currentTarget.transform;
+            GameObject bullet = ProjectileObjectPool.Instance.GetGunBullet();
+            if (bullet != null)
+            {
+                bullet.transform.position = muzzleMain.transform.position;
+                bullet.transform.rotation = muzzleMain.rotation;
+                Projectile projectile = bullet.GetComponent<Projectile>();
+                bullet.SetActive(true);
+                projectile.target = currentTarget.transform;
+                projectile.OnActive();
+                //projectile.target = transform.GetComponent<TurretAI>().currentTarget.transform;
+            }
         }
     }
 }
